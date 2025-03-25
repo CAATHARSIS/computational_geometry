@@ -54,3 +54,38 @@ func Intersect(A, B, C, D Point) bool {
 
 	return false
 }
+
+func DistanceToSegment(P, A, B Point) float64 {
+	AB := Point{X: B.X - A.X, Y: B.Y - A.Y}
+	AP := Point{X: P.X - A.X, Y: P.Y - A.Y}
+	BP := Point{X: P.X - B.X, Y: P.Y - B.Y}
+
+	dotABAP := AB.X*AP.X + AB.Y*AP.Y
+	dotABAB := AB.X*AB.X + AB.Y*AB.Y
+
+	if dotABAP <= 0 {
+		return math.Sqrt(AP.X*AP.X + AP.Y*AP.Y)
+	}
+	if dotABAP <= dotABAB {
+		return math.Sqrt(BP.X*BP.X + BP.Y*BP.Y)
+	}
+
+	return math.Abs(AB.X*AP.Y-AB.Y*AP.X) / math.Sqrt(dotABAB)
+}
+
+func DistanceToPolygon(polygon []Point, P Point) float64 {
+	minDist := math.MaxFloat64
+	n := len(polygon)
+
+	for i := 0; i < n; i++ {
+		A := polygon[i]
+		B := polygon[(i+1)%n]
+
+		dist := DistanceToSegment(P, A, B)
+		if dist < minDist {
+			minDist = dist
+		}
+	}
+
+	return minDist
+}
