@@ -1,26 +1,37 @@
 package main
 
 import (
-	"computational_geometry/geometry"
+	g "computational_geometry/geometry"
 	"fmt"
 )
 
 func main() {
-	a := geometry.Point{X: 0, Y: 0}
-	b := geometry.Point{X: 2, Y: 2}
-	c := geometry.Point{X: 0, Y: 1}
-	d := geometry.Point{X: 2, Y: 3}
+	a := g.Point{X: 0, Y: 0}
+	b := g.Point{X: 2, Y: 2}
+	c := g.Point{X: 0, Y: 1}
+	d := g.Point{X: 2, Y: 3}
 
-	println(geometry.Intersect(a, b, c, d))
+	println(g.Intersect(a, b, c, d))
 
-	polygon := []geometry.Point{
+	polygon := []g.Point{
 		{X: 0, Y: 0},
 		{X: 4, Y: 0},
 		{X: 4, Y: 4},
 		{X: 0, Y: 4},
 	}
-	point := geometry.Point{X: 5, Y: 2}
+	point := g.Point{X: 5, Y: 2}
 
-	distance := geometry.DistanceToPolygon(polygon, point)
+	distance := g.DistanceToPolygon(polygon, point)
 	fmt.Printf("Расстояние от точки до многоугольника: %.2f\n", distance)
+
+	A, B, C := g.Point{X: 0, Y: 0}, g.Point{X: 4, Y: 0}, g.Point{X: 0, Y: 4}
+
+	// Точка внутри
+	fmt.Println(g.IsPointInTriangle(A, B, C, g.Point{X: 1, Y: 1}))
+
+	// Точка снаружи
+	fmt.Println(g.IsPointInTriangle(A, B, C, g.Point{X: 5, Y: 5}))
+
+	// Точка на границе
+	fmt.Println(g.IsPointInTriangle(A, B, C, g.Point{X: 2, Y: 0}))
 }
