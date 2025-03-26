@@ -20,7 +20,7 @@ func isPointOnSegment(A, B, C Point) bool {
 		return false
 	}
 
-	// Проверка на нахождение точки между A и B
+	// Проверка на нахождение точки между A и B (скалярное произведение AC и AB)
 	if dot := (B.X-A.X)*(C.X-A.X) + (B.Y-A.Y)*(C.Y-A.Y); dot < 0 {
 		return false
 	}
@@ -63,21 +63,23 @@ func distanceToSegment(P, A, B Point) float64 {
 	dotABAP := AB.X*AP.X + AB.Y*AP.Y
 	dotABAB := AB.X*AB.X + AB.Y*AB.Y
 
+	// точка P до AB
 	if dotABAP <= 0 {
 		return math.Sqrt(AP.X*AP.X + AP.Y*AP.Y)
 	}
+	// точка P после AB
 	if dotABAP >= dotABAB {
 		return math.Sqrt(BP.X*BP.X + BP.Y*BP.Y)
 	}
 
-	return math.Abs(AB.X*AP.Y-AB.Y*AP.X) / math.Sqrt(dotABAB)
+	return math.Abs(AB.X*AP.Y-AB.Y*AP.X) / math.Sqrt(dotABAB) // AB.X*AP.Y-AB.Y*AP.X - векторное произведение AB x AP
 }
 
 func DistanceToPolygon(polygon []Point, P Point) float64 {
 	minDist := math.MaxFloat64
 	n := len(polygon)
 
-	for i := 0; i < n; i++ {
+	for i := range n {
 		A := polygon[i]
 		B := polygon[(i+1)%n]
 
@@ -87,7 +89,7 @@ func DistanceToPolygon(polygon []Point, P Point) float64 {
 		}
 	}
 
-	return minDist
+	return math.Round(minDist*1000) / 1000
 }
 
 func IsPointInTriangle(A, B, C, P Point) bool {
