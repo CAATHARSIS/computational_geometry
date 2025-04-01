@@ -229,3 +229,75 @@ func TestIsPointInTriangle(t *testing.T) {
 		})
 	}
 }
+
+func TestIsPointInPolygon(t *testing.T) {
+	var testcaeses = []struct {
+		text    string
+		polygon []Point
+		point   Point
+		want    bool
+	}{
+		{"Простой выпуклый многоугольник (четырёхугольник)", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 2, Y: 2},
+			{X: 0, Y: 2},
+		}, Point{X: 1, Y: 1}, true},
+		{"Простой невыпуклый многоугольник («звезда»)", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 4, Y: 0},
+			{X: 2, Y: 1},
+		}, Point{X: 1, Y: 0.5}, true},
+		{"Точка снаружи многоугольника", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 2, Y: 2},
+			{X: 0, Y: 2},
+		}, Point{X: 3, Y: 3}, false},
+		{"Точка на ребре многоугольника", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 2, Y: 2},
+			{X: 0, Y: 2},
+		}, Point{X: 1, Y: 0}, true},
+		{"Точка на вершине многоугольника", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 2, Y: 2},
+			{X: 0, Y: 2},
+		}, Point{X: 2, Y: 0}, true},
+		{"Точка на вершине многоугольника", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 2, Y: 2},
+			{X: 0, Y: 2},
+		}, Point{X: 2, Y: 0}, true},
+		{"Точка близко к границе, но снаружи", []Point{
+			{X: 0, Y: 0},
+			{X: 2, Y: 0},
+			{X: 2, Y: 2},
+			{X: 0, Y: 2},
+		}, Point{X: 1, Y: -0.1}, false},
+		{"Сложный невыпуклый многоугольник", []Point{
+			{X: 0, Y: 0},
+			{X: 3, Y: 0},
+			{X: 3, Y: 1},
+			{X: 2, Y: 1},
+			{X: 2, Y: 2},
+			{X: 3, Y: 2},
+			{X: 3, Y: 3},
+			{X: 0, Y: 3},
+		}, Point{X: 1, Y: 1.5}, true},
+	}
+
+	for _, tt := range testcaeses {
+		t.Run(tt.text, func(t *testing.T) {
+			res := IsPointInPolygon(tt.polygon, tt.point)
+
+			if res != tt.want {
+				t.Errorf("got %t, want %t", res, tt.want)
+			}
+		})
+	}
+}

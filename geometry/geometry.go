@@ -99,3 +99,37 @@ func IsPointInTriangle(A, B, C, P Point) bool {
 
 	return (cp1 >= 0 && cp2 >= 0 && cp3 >= 0) || (cp1 <= 0 && cp2 <= 0 && cp3 <= 0)
 }
+
+func IsPointInPolygon(polygon []Point, P Point) bool {
+    n := len(polygon)
+    if n < 3 {
+        return false
+    }
+
+    inside := false
+    epsilon := 1e-12
+
+    for i := range n {
+        A := polygon[i]
+        B := polygon[(i+1)%n]
+
+        // 1. Проверка на совпадение с вершинами ребра
+        if (math.Abs(P.X-A.X) < epsilon && math.Abs(P.Y-A.Y) < epsilon) ||
+           (math.Abs(P.X-B.X) < epsilon && math.Abs(P.Y-B.Y) < epsilon) {
+            return true // если точка в вершине = точка внутри
+			// continue // иначе ропускаем вершину, но продолжаем проверку
+        }
+
+		// // 2. Проверка на принадлежность ребру (без вершин); если точка на ребре != точка внутри
+		// if isPointOnSegment(A, B, P) {
+        //     return false
+        // }
+
+        // 3. Проверка пересечения с ребром
+        if ((A.Y > P.Y) != (B.Y > P.Y)) && 
+           (P.X < (B.X-A.X)*(P.Y-A.Y)/(B.Y-A.Y)+A.X) {
+            inside = !inside
+        }
+    }
+    return inside
+}
